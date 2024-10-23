@@ -11,13 +11,15 @@ import React, {
 interface ContextType {
   getLanguage: string;
   setLanguage: (value: string) => void;
-  gt: (value: string) => '';
+  gs: (field: string, values?: Record<any, any>) => string;
+  ga: (value: string) => any[];
 }
 
 const ContextDefault: ContextType = {
   getLanguage: '',
   setLanguage: () => null,
-  gt: () => '',
+  gs: () => '',
+  ga: () => [],
 };
 
 interface LangType {
@@ -58,6 +60,7 @@ export const LangContextProvider: React.FC<{
       if (savedLang) {
         setTransl(langConfig.languages.find((lang) => lang[savedLang]) ?? {});
         setLanguage(savedLang);
+        document.documentElement.lang = savedLang;
       } else {
         setTransl(
           langConfig.languages.find((lang) => lang[langConfig.defaultLang]) ??
@@ -74,6 +77,7 @@ export const LangContextProvider: React.FC<{
 
   useEffect(() => {
     if (!initialSet.current) {
+      document.documentElement.lang = getLanguage;
       setTransl(langConfig.languages.find((lang) => lang[getLanguage]) ?? {});
       if (langConfig.mode === 'local') {
         localStorage.setItem('lang', getLanguage);
@@ -96,7 +100,10 @@ export const LangContextProvider: React.FC<{
     }
   };
 
-  const GetTransl = (field: string): any => {
+  const GetString = (
+    field: string,
+    values: Record<string, string> = {}
+  ): string => {
     const keys = ['', ...field.split('.')];
     keys[0] = getLanguage;
     let result: any = transl;
@@ -107,18 +114,44 @@ export const LangContextProvider: React.FC<{
         return field;
       }
     }
-    return result;
+    if (typeof result === 'string') {
+      return result.replace(/{{(.*?)}}/g, (_, key) => {
+        return key in values ? values[key] : '';
+      });
+    } else {
+      console.error(`${field} is not a string`);
+      return field;
+    }
+  };
+
+  const GetArray = (field: string): any[] => {
+    const keys = ['', ...field.split('.')];
+    keys[0] = getLanguage;
+    let result: any = transl;
+    for (let key of keys) {
+      if (result[key] !== undefined) {
+        result = result[key];
+      } else {
+        return [];
+      }
+    }
+    if (Array.isArray(result)) {
+      return result;
+    } else {
+      console.error(`${field} is not an array`);
+      return [];
+    }
   };
 
   return (
     <LangContext.Provider
-      value={{ getLanguage, setLanguage: SetLang, gt: GetTransl }}
+      value={{ getLanguage, setLanguage: SetLang, gs: GetString, ga: GetArray }}
     >
       {children}
     </LangContext.Provider>
   );
 };
 
-export const useLangContext = () => {
+export const useLanguage = () => {
   return useContext(LangContext);
 };

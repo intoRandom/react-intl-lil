@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { LangConfigType, LangContextProvider, useLangContext } from './Context';
+import { LangConfigType, LangContextProvider, useLanguage } from './Context';
 
 export const LangProvider: React.FC<{
   children: React.ReactNode;
-  getLanguageConfig: LangConfigType;
-}> = ({ children, getLanguageConfig }) => {
+  langConfig: LangConfigType;
+}> = ({ children, langConfig }) => {
   return (
-    <LangContextProvider langConfig={getLanguageConfig}>
+    <LangContextProvider langConfig={langConfig}>
       <ContentLoader>{children}</ContentLoader>
     </LangContextProvider>
   );
@@ -17,7 +17,7 @@ export const LangProvider: React.FC<{
 const ContentLoader: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { getLanguage } = useLangContext();
+  const { getLanguage } = useLanguage();
 
   return (
     <>
