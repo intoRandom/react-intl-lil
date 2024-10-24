@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { LangConfigType, LangContextProvider, useLanguage } from './Context';
+import { LangConfigType, LangContextProvider, useShow } from './Context';
 
 export const LangProvider: React.FC<{
   children: React.ReactNode;
@@ -17,13 +17,17 @@ export const LangProvider: React.FC<{
 const ContentLoader: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { getLanguage } = useLanguage();
+  const { show } = useShow();
+
+  const transition = {
+    opacity: !show ? 0 : 1,
+    visibility: !show ? 'hidden' : 'visible',
+    transition: !show ? '' : 'opacity 0.3s ease-in 0.2s',
+  };
 
   return (
     <>
-      <div style={{ visibility: getLanguage === '' ? 'hidden' : 'visible' }}>
-        {children}
-      </div>
+      <div style={transition}>{children}</div>
     </>
   );
 };

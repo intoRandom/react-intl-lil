@@ -1,4 +1,4 @@
-<h1 align="center" style="font-size:24px;">
+<h1 align="center" style="font-size:24px; color:red">
   <br>
   <a href="https://github.com/intoRandom/react-intl-lil.git">
     react-intl-lil
@@ -11,20 +11,16 @@ The Easiest Static Internationalization for React and Next.js
 
 ## Features
 
-Common internationalizations package have a problem, they are built with dynamic websites in mind. For static projects this is the best solution.
+Common internationalizations package have a problem, they are built with dynamic websites in mind.
 
 - **Multi-Language Support 🎯**  
   Supports both single and multiple languages with easy configuration for updates.
-
 - **Local Storage for User Preferences 🗳️**  
   Stores the user’s language preference in `localStorage` for persistence across sessions.
-
 - **No Extra Server Configuration 🙅🏻**  
   Ideal for SPAs with zero need for additional server setup or configurations.
-
 - **Easy Setup & Fast Deployment 🚀**  
   Quick to install and configure, ready to use in minutes.
-
 - **Built with TypeScript 🔓**  
   Fully typed with TypeScript for enhanced development experience and type safety.
 
@@ -37,7 +33,7 @@ import { langConfig } from '@/config';
 
 export default function Home() {
   const { gt, ga } = useLanguage();
-  const ver = '1.0.0';
+  const ver = '1.1.0';
 
   return (
   <>
@@ -58,19 +54,6 @@ export default function Home() {
 ```
 
 ```js
-// config.ts
-import { LangConfigType } from 'react-intl-lil';
-import es from './messages/es';
-import en from './messages/en';
-
-export const langConfig: LangConfigType = {
-  defaultLang: 'en',
-  mode: 'single',
-  languages: [{ en: en }, { es: es }],
-};
-```
-
-```js
 // en.ts
 const data = {
   home: {
@@ -84,7 +67,12 @@ const data = {
 };
 ```
 
-### [→ Docs and Demos](https://github.com/intoRandom/react-intl-lil.git)
+## Docs and demos
+
+Just remember the guides themselves are the demos, source code available.
+
+- **[Next js](https://github.com/intoRandom/react-intl-lil.git)**
+- **[React](https://github.com/intoRandom/react-intl-lil.git)**
 
 ## Donations
 

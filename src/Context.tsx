@@ -22,6 +22,14 @@ const ContextDefault: ContextType = {
   ga: () => [],
 };
 
+interface InnerContextType {
+  show: boolean;
+}
+
+const InnerContextDefault: InnerContextType = {
+  show: false,
+};
+
 interface LangType {
   [key: string]: object;
 }
@@ -33,6 +41,8 @@ export interface LangConfigType {
 }
 
 const LangContext = createContext<ContextType>(ContextDefault);
+
+const InnerContext = createContext<InnerContextType>(InnerContextDefault);
 
 export const LangContextProvider: React.FC<{
   children: React.ReactNode;
@@ -47,6 +57,8 @@ export const LangContextProvider: React.FC<{
       ? langConfig.languages.find((lang) => lang[langConfig.defaultLang]) ?? {}
       : {}
   );
+
+  const [show, setShow] = useState<boolean>(false);
 
   const initialSet = useRef(true);
 
@@ -79,6 +91,7 @@ export const LangContextProvider: React.FC<{
     if (!initialSet.current) {
       document.documentElement.lang = getLanguage;
       setTransl(langConfig.languages.find((lang) => lang[getLanguage]) ?? {});
+      setShow(true);
       if (langConfig.mode === 'local') {
         localStorage.setItem('lang', getLanguage);
       }
@@ -90,10 +103,13 @@ export const LangContextProvider: React.FC<{
   const SetLang = (newLang: string) => {
     if (languages.includes(newLang)) {
       if (getLanguage !== newLang) {
-        setLanguage(newLang);
-      }
-      if (langConfig.mode === 'single') {
-        console.warn('New language will not be reload persistent');
+        setShow(false);
+        setTimeout(() => {
+          setLanguage(newLang);
+          if (langConfig.mode === 'single') {
+            console.warn('New language will not be reload persistent');
+          }
+        }, 200);
       }
     } else {
       console.error('New language not found in config file');
@@ -104,8 +120,7 @@ export const LangContextProvider: React.FC<{
     field: string,
     values: Record<string, string> = {}
   ): string => {
-    const keys = ['', ...field.split('.')];
-    keys[0] = getLanguage;
+    const keys = [getLanguage, ...field.split('.')];
     let result: any = transl;
     for (let key of keys) {
       if (result[key] !== undefined) {
@@ -125,8 +140,7 @@ export const LangContextProvider: React.FC<{
   };
 
   const GetArray = (field: string): any[] => {
-    const keys = ['', ...field.split('.')];
-    keys[0] = getLanguage;
+    const keys = [getLanguage, ...field.split('.')];
     let result: any = transl;
     for (let key of keys) {
       if (result[key] !== undefined) {
@@ -144,14 +158,25 @@ export const LangContextProvider: React.FC<{
   };
 
   return (
-    <LangContext.Provider
-      value={{ getLanguage, setLanguage: SetLang, gs: GetString, ga: GetArray }}
-    >
-      {children}
-    </LangContext.Provider>
+    <InnerContext.Provider value={{ show }}>
+      <LangContext.Provider
+        value={{
+          getLanguage,
+          setLanguage: SetLang,
+          gs: GetString,
+          ga: GetArray,
+        }}
+      >
+        {children}
+      </LangContext.Provider>
+    </InnerContext.Provider>
   );
 };
 
 export const useLanguage = () => {
   return useContext(LangContext);
+};
+
+export const useShow = () => {
+  return useContext(InnerContext);
 };
