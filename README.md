@@ -71,7 +71,7 @@ const data = {
 
 Just remember the guides themselves are the demos, source code available.
 
-- **[Next js](https://github.com/intoRandom/react-intl-lil.git)**
+- **[Next js](https://intorandom.github.io/react-intl-lil-next/)**
 - **[React](https://github.com/intoRandom/react-intl-lil.git)**
 
 ## Donations
