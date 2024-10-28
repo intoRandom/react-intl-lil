@@ -32,14 +32,14 @@ import { useLanguage, LangProvider } from 'react-intl-lil';
 import { langConfig } from '@/config';
 
 export default function Home() {
-  const { gt, ga } = useLanguage();
-  const ver = '1.1.0';
+  const { gs, ga } = useLanguage();
+  const ver = '1.1.2';
 
   return (
   <>
     <LangProvider langConfig={langConfig}>
-      <h1>{gt('home.title')}</h1>
-      <p>{gt('home.version', { version: ver })}</p>
+      <h1>{gs('home.title')}</h1>
+      <p>{gs('home.version', { version: ver })}</p>
       <ul>
         {ga('home.features').map((item) => (
           <li key={item.title}>
